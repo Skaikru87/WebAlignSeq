@@ -26,14 +26,16 @@ public class ExcelService {
         String targetDNA;
         File fileExel = new File(fileName);
         fileExel.createNewFile();
-        FileOutputStream fos = new FileOutputStream(fileExel);
-        fos.write(file.getBytes());
-        fos.close();
+        try (FileOutputStream fos = new FileOutputStream(fileExel)) {
+            fos.write(file.getBytes());
+        }
         try (InputStream inp = new FileInputStream(fileExel)) {
             Workbook workbook = WorkbookFactory.create(inp);
             for (Sheet sheet : workbook) {
-                Row row = sheet.getRow(1);
-                Cell cell = row.getCell(1);
+                int rowRefPosition = 1;
+                int cellRefPosition = 1;
+                Row row = sheet.getRow(rowRefPosition);
+                Cell cell = row.getCell(cellRefPosition);
                 refDNA = cell.getStringCellValue();
                 char[] refDNAArr = refDNA.toCharArray();
                 for (int i = 0; i < refDNAArr.length; i++) {
@@ -62,7 +64,6 @@ public class ExcelService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         Files.copy(fileExel.toPath(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         Files.delete(fileExel.toPath());
     }
