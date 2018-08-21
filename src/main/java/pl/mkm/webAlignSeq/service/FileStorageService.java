@@ -48,26 +48,21 @@ public class FileStorageService {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
-            if(fileName.contains("..")) {
+            if (fileName.contains("..")) {
                 throw new FileStorageException("Filename contains invalid path sequence " + fileName);
             }
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            //start doing job with file
             String refDNA;
             String targetDNA;
-            // *****from working code
-            // File fileExel = new File("aligner.xlsx");
             File fileExel = new File(fileName);
             fileExel.createNewFile();
             FileOutputStream fos = new FileOutputStream(fileExel);
             fos.write(file.getBytes());
             fos.close();
             try (InputStream inp = new FileInputStream(fileExel)) {
-
                 Workbook workbook = WorkbookFactory.create(inp);
-
                 for (Sheet sheet : workbook) {
                     Row row = sheet.getRow(1);
                     Cell cell = row.getCell(1);
@@ -77,15 +72,12 @@ public class FileStorageService {
                         cell = row.createCell(i + 2);
                         cell.setCellValue("" + refDNAArr[i]);
                     }
-
                     for (int i = 2; i < sheet.getLastRowNum() + 1; i++) {
                         Row row1 = sheet.getRow(i);
                         Cell cell1 = row1.getCell(1);
                         targetDNA = cell1.getStringCellValue();
                         int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
-
                         char[] targedAlignedArr = targetDNA.toCharArray();
-
                         for (int k = 0; k < targedAlignedArr.length; k++) {
                             if (k < startNumber - 1) {
                                 cell = row1.createCell(k + 2);
@@ -102,7 +94,10 @@ public class FileStorageService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //end
+
+            Files.copy(fileExel.toPath(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            Files.delete(fileExel.toPath());
+
             return fileName;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
@@ -113,7 +108,7 @@ public class FileStorageService {
         try {
             Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists()) {
+            if (resource.exists()) {
                 return resource;
             } else {
                 throw new MyFileNotFoundException("File not found " + fileName);
