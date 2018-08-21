@@ -1,14 +1,6 @@
 package pl.mkm.webAlignSeq.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.biojava.bio.alignment.AlignmentPair;
-import org.biojava.bio.alignment.SmithWaterman;
-import org.biojava.bio.alignment.SubstitutionMatrix;
-import org.biojava.bio.seq.DNATools;
-import org.biojava.bio.seq.Sequence;
-import org.biojava.bio.symbol.AlphabetManager;
-import org.biojava.bio.symbol.FiniteAlphabet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -60,7 +52,6 @@ public class FileStorageService {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
-
 
     public Resource loadFileAsResource(String fileName) {
         try {
