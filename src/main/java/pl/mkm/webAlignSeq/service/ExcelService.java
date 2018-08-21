@@ -32,28 +32,28 @@ public class ExcelService {
         try (InputStream inp = new FileInputStream(fileExel)) {
             Workbook workbook = WorkbookFactory.create(inp);
             for (Sheet sheet : workbook) {
-                int rowRefPosition = 1;
-                int cellRefPosition = 1;
+                int rowRefPosition = 3; //remember! first row is 0
+                int cellRefPosition = 2; // remember! first cell is 0
                 Row row = sheet.getRow(rowRefPosition);
-                Cell cell = row.getCell(cellRefPosition);
+                Cell cell = row.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 refDNA = cell.getStringCellValue();
                 char[] refDNAArr = refDNA.toCharArray();
                 for (int i = 0; i < refDNAArr.length; i++) {
-                    cell = row.createCell(i + 2);
+                    cell = row.createCell(i + 1 + cellRefPosition);
                     cell.setCellValue("" + refDNAArr[i]);
                 }
-                for (int i = 2; i < sheet.getLastRowNum() + 1; i++) {
+                for (int i = rowRefPosition + 1; i < sheet.getLastRowNum() + 1; i++) {
                     Row row1 = sheet.getRow(i);
-                    Cell cell1 = row1.getCell(1);
+                    Cell cell1 = row1.getCell(cellRefPosition);
                     targetDNA = cell1.getStringCellValue();
                     int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
                     char[] targedAlignedArr = targetDNA.toCharArray();
                     for (int k = 0; k < targedAlignedArr.length; k++) {
                         if (k < startNumber - 1) {
-                            cell = row1.createCell(k + 2);
+                            cell = row1.createCell(k + cellRefPosition + 1);
                             cell.setCellValue("-");
                         }
-                        cell = row1.createCell(k + startNumber + 1);
+                        cell = row1.createCell(k + startNumber + cellRefPosition);
                         cell.setCellValue("" + targedAlignedArr[k]);
                     }
                 }
