@@ -29,19 +29,22 @@ public class ExcelService {
         }
         try (InputStream inp = new FileInputStream(fileExcel)) {
             Workbook workbook = WorkbookFactory.create(inp);
-           try{
-               for (Sheet sheet : workbook) {
-                   int rowRefPosition = 3; //remember! first row is 0
-                   int cellRefPosition = 2; // remember! first cell is 0
-                   String refDNA = splitRefSeqToCells(sheet, rowRefPosition, cellRefPosition);
-                   splitTargetToCells(refDNA, sheet, rowRefPosition, cellRefPosition);
-               }
-           }catch (NullPointerException e){
-               System.out.println("empty sheet!, please remove empty sheet and try again");
-           }
+            try {
+                for (Sheet sheet : workbook) {
+                    int rowRefPosition = 3; //remember! first row is 0
+                    int cellRefPosition = 2; // remember! first cell is 0
+                    String refDNA = splitRefSeqToCells(sheet, rowRefPosition, cellRefPosition);
+                    splitTargetToCells(refDNA, sheet, rowRefPosition, cellRefPosition);
+                }
+            } catch (NullPointerException e) {
+                System.out.println("empty sheet!, please remove empty sheet and try again");
+            }
             try (OutputStream excelWriter = new FileOutputStream(fileExcel)) {
                 workbook.write(excelWriter);
             }
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,15 +52,28 @@ public class ExcelService {
         Files.delete(fileExcel.toPath());
     }
 
+    private CellStyle setCellStyleDifferNucleotides(Workbook workbook, char nucleotide) {
+        CellStyle style = workbook.createCellStyle();
+        if(nucleotide == 'T')style.setFillForegroundColor(IndexedColors.RED1.getIndex());
+        if(nucleotide == 'A')style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        if(nucleotide == 'C')style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        if(nucleotide == 'G')style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return style;
+    }
+
     private String splitRefSeqToCells(Sheet sheet, int rowRefPosition, int cellRefPosition) {
         String refDNA;
         Row row = sheet.getRow(rowRefPosition);
         Cell cell = row.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-        refDNA = cell.getStringCellValue().replaceAll("\\s","");
+        refDNA = cell.getStringCellValue().replaceAll("\\s", "");
         char[] refDNAArr = refDNA.toCharArray();
         for (int i = 0; i < refDNAArr.length; i++) {
             cell = row.createCell(i + 1 + cellRefPosition);
             cell.setCellValue("" + refDNAArr[i]);
+            cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(), refDNAArr[i]));
+
         }
         return refDNA;
     }
@@ -68,7 +84,7 @@ public class ExcelService {
         for (int i = rowRefPosition + 1; i < sheet.getLastRowNum() + 1; i++) {
             Row row1 = sheet.getRow(i);
             Cell cell1 = row1.getCell(cellRefPosition);
-            targetDNA = cell1.getStringCellValue().replaceAll("\\s","");
+            targetDNA = cell1.getStringCellValue().replaceAll("\\s", "");
             int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
             char[] targedAlignedArr = targetDNA.toCharArray();
             for (int k = 0; k < targedAlignedArr.length; k++) {
@@ -78,6 +94,7 @@ public class ExcelService {
                 }
                 cell = row1.createCell(k + startNumber + cellRefPosition);
                 cell.setCellValue("" + targedAlignedArr[k]);
+                cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(),targedAlignedArr[k]));
             }
         }
     }
