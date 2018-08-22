@@ -22,50 +22,64 @@ public class ExcelService {
 
     public void generateAlignmentInExcelCells(MultipartFile file, Path targetLocation) throws IOException {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String refDNA;
-        String targetDNA;
-        File fileExel = new File(fileName);
-        fileExel.createNewFile();
-        try (FileOutputStream fos = new FileOutputStream(fileExel)) {
+        File fileExcel = new File(fileName);
+        fileExcel.createNewFile();
+        try (FileOutputStream fos = new FileOutputStream(fileExcel)) {
             fos.write(file.getBytes());
         }
-        try (InputStream inp = new FileInputStream(fileExel)) {
+        try (InputStream inp = new FileInputStream(fileExcel)) {
             Workbook workbook = WorkbookFactory.create(inp);
-            for (Sheet sheet : workbook) {
-                int rowRefPosition = 3; //remember! first row is 0
-                int cellRefPosition = 2; // remember! first cell is 0
-                Row row = sheet.getRow(rowRefPosition);
-                Cell cell = row.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                refDNA = cell.getStringCellValue();
-                char[] refDNAArr = refDNA.toCharArray();
-                for (int i = 0; i < refDNAArr.length; i++) {
-                    cell = row.createCell(i + 1 + cellRefPosition);
-                    cell.setCellValue("" + refDNAArr[i]);
-                }
-                for (int i = rowRefPosition + 1; i < sheet.getLastRowNum() + 1; i++) {
-                    Row row1 = sheet.getRow(i);
-                    Cell cell1 = row1.getCell(cellRefPosition);
-                    targetDNA = cell1.getStringCellValue();
-                    int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
-                    char[] targedAlignedArr = targetDNA.toCharArray();
-                    for (int k = 0; k < targedAlignedArr.length; k++) {
-                        if (k < startNumber - 1) {
-                            cell = row1.createCell(k + cellRefPosition + 1);
-                            cell.setCellValue("-");
-                        }
-                        cell = row1.createCell(k + startNumber + cellRefPosition);
-                        cell.setCellValue("" + targedAlignedArr[k]);
-                    }
-                }
-            }
-            try (OutputStream exelWriter = new FileOutputStream(fileExel)) {
-                workbook.write(exelWriter);
+           try{
+               for (Sheet sheet : workbook) {
+                   int rowRefPosition = 3; //remember! first row is 0
+                   int cellRefPosition = 2; // remember! first cell is 0
+                   String refDNA = splitRefSeqToCells(sheet, rowRefPosition, cellRefPosition);
+                   splitTargetToCells(refDNA, sheet, rowRefPosition, cellRefPosition);
+               }
+           }catch (NullPointerException e){
+               System.out.println("empty sheet!, please remove empty sheet and try again");
+           }
+            try (OutputStream excelWriter = new FileOutputStream(fileExcel)) {
+                workbook.write(excelWriter);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Files.copy(fileExel.toPath(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-        Files.delete(fileExel.toPath());
+        Files.copy(fileExcel.toPath(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        Files.delete(fileExcel.toPath());
+    }
+
+    private String splitRefSeqToCells(Sheet sheet, int rowRefPosition, int cellRefPosition) {
+        String refDNA;
+        Row row = sheet.getRow(rowRefPosition);
+        Cell cell = row.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+        refDNA = cell.getStringCellValue().replaceAll("\\s","");
+        char[] refDNAArr = refDNA.toCharArray();
+        for (int i = 0; i < refDNAArr.length; i++) {
+            cell = row.createCell(i + 1 + cellRefPosition);
+            cell.setCellValue("" + refDNAArr[i]);
+        }
+        return refDNA;
+    }
+
+    private void splitTargetToCells(String refDNA, Sheet sheet, int rowRefPosition, int cellRefPosition) {
+        String targetDNA;
+        Cell cell;
+        for (int i = rowRefPosition + 1; i < sheet.getLastRowNum() + 1; i++) {
+            Row row1 = sheet.getRow(i);
+            Cell cell1 = row1.getCell(cellRefPosition);
+            targetDNA = cell1.getStringCellValue().replaceAll("\\s","");
+            int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
+            char[] targedAlignedArr = targetDNA.toCharArray();
+            for (int k = 0; k < targedAlignedArr.length; k++) {
+                if (k < startNumber - 1) {
+                    cell = row1.createCell(k + cellRefPosition + 1);
+                    cell.setCellValue("-");
+                }
+                cell = row1.createCell(k + startNumber + cellRefPosition);
+                cell.setCellValue("" + targedAlignedArr[k]);
+            }
+        }
     }
 
     private static int getStartNumberOfAlignment(String refDNA, String targetDNA) {
