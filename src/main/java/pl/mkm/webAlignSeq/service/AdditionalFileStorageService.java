@@ -18,7 +18,7 @@ public class AdditionalFileStorageService {
 
     private final Path fileStorageLocation;
 
-   @Autowired
+    @Autowired
     public AdditionalFileStorageService(FileStorageProperties FileStorageProperties) {
         this.fileStorageLocation = Paths.get(FileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
@@ -30,11 +30,8 @@ public class AdditionalFileStorageService {
     }
 
     public String storeFile(MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = "gene_info.csv";
         try {
-            if (fileName.contains("..")) {
-                throw new FileStorageException("Filename contains invalid path sequence " + fileName);
-            }
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
@@ -42,5 +39,4 @@ public class AdditionalFileStorageService {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
     }
-
 }
