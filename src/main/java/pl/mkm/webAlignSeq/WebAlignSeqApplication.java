@@ -3,11 +3,12 @@ package pl.mkm.webAlignSeq;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import pl.mkm.webAlignSeq.property.AdditionalFileStorageProperties;
 import pl.mkm.webAlignSeq.property.FileStorageProperties;
 
 @SpringBootApplication
 @EnableConfigurationProperties({
-		FileStorageProperties.class
+		FileStorageProperties.class, AdditionalFileStorageProperties.class
 })
 public class WebAlignSeqApplication {
 
