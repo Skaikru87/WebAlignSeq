@@ -42,9 +42,6 @@ public class ExcelService {
             try (OutputStream excelWriter = new FileOutputStream(fileExcel)) {
                 workbook.write(excelWriter);
             }
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,10 +51,10 @@ public class ExcelService {
 
     private CellStyle setCellStyleDifferNucleotides(Workbook workbook, char nucleotide) {
         CellStyle style = workbook.createCellStyle();
-        if(nucleotide == 'T')style.setFillForegroundColor(IndexedColors.RED1.getIndex());
-        if(nucleotide == 'A')style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
-        if(nucleotide == 'C')style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-        if(nucleotide == 'G')style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        if (nucleotide == 'T') style.setFillForegroundColor(IndexedColors.RED1.getIndex());
+        if (nucleotide == 'A') style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        if (nucleotide == 'C') style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        if (nucleotide == 'G') style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
 
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return style;
@@ -73,9 +70,27 @@ public class ExcelService {
             cell = row.createCell(i + 1 + cellRefPosition);
             cell.setCellValue("" + refDNAArr[i]);
             cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(), refDNAArr[i]));
-
         }
+        addPositionOnChromosome(sheet, rowRefPosition, cellRefPosition, refDNAArr);
         return refDNA;
+    }
+
+    private void addPositionOnChromosome(Sheet sheet, int rowRefPosition, int cellRefPosition, char[] refDNAArr) {
+        if (!(sheet.getRow(rowRefPosition - 1) == null)) {
+            Row rowNumber = sheet.getRow(rowRefPosition - 1);
+            Cell cellNumber = rowNumber.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            double positionChromosome = cellNumber.getNumericCellValue();
+            for (int i = 0; i < refDNAArr.length; i++) {
+                cellNumber = rowNumber.createCell(i + 1 + cellRefPosition);
+                cellNumber.setCellValue(positionChromosome + i);
+            }
+        } else {
+            Row rowNumber = sheet.createRow(rowRefPosition - 1);
+            for (int i = 0; i < refDNAArr.length; i++) {
+                Cell cellNumber = rowNumber.createCell(i + 1 + cellRefPosition);
+                cellNumber.setCellValue(i + 1);
+            }
+        }
     }
 
     private void splitTargetToCells(String refDNA, Sheet sheet, int rowRefPosition, int cellRefPosition) {
@@ -94,7 +109,7 @@ public class ExcelService {
                 }
                 cell = row1.createCell(k + startNumber + cellRefPosition);
                 cell.setCellValue("" + targedAlignedArr[k]);
-                cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(),targedAlignedArr[k]));
+                cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(), targedAlignedArr[k]));
             }
         }
     }
