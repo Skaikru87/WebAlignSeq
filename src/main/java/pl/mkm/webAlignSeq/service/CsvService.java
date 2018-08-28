@@ -1,6 +1,9 @@
 package pl.mkm.webAlignSeq.service;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -14,28 +17,34 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class CsvService {
 
-    @Autowired
-    AdditionalFileStorageService additionalFileStorageService;
 
     private File csvFile = new File("uploads/gene_info.csv");
-
 
     public List<SNPinfo> readGeneInfo() {
 
         List<SNPinfo> dataFromCSV = new ArrayList<>();
+      //  final  Charset charset;
         try {
-            //Reader reader = new FileReader(csvFile);
-            InputStream in = new FileInputStream(csvFile);
-            Reader reader = newReader(in);
-            Iterable<CSVRecord> records = CSVFormat.newFormat(';').withFirstRecordAsHeader().parse(reader);
+            Reader reader = new FileReader(csvFile);
+            //InputStream in = new FileInputStream(csvFile);
+            //Reader reader = newReader(in);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
 
-//            CSVFormat format = CSVFormat.newFormat(';').withFirstRecordAsHeader();
-//            CSVParser records = CSVParser.parse(csvFile,StandardCharsets.UTF_8, format);
+//            CharsetDetector charsetDetector = new CharsetDetector();
+//            charsetDetector.setText(in);
+//            CharsetMatch charsetMatch = charsetDetector.detect();
+//            charset = Charset.forName(charsetMatch.getName());
+//
+//            CSVFormat format = CSVFormat.TDF.withFirstRecordAsHeader();
+//            CSVParser records = CSVParser.parse(csvFile, StandardCharsets.US_ASCII, format);
+//            log.info("charset: " + charset);
 
             for (CSVRecord record : records) {
+                log.info(" reading csv: " + record.getRecordNumber());
                 SNPinfo snpInfo = new SNPinfo();
                 snpInfo.setRsNumber(record.get("Variant ID"));
                 snpInfo.setAlleles(record.get("Alleles"));
@@ -47,8 +56,8 @@ public class CsvService {
 
                 dataFromCSV.add(snpInfo);
             }
-            reader.close();
-           // records.close();
+           reader.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (java.io.IOException e) {
@@ -57,9 +66,10 @@ public class CsvService {
         return dataFromCSV;
     }
 
-    public InputStreamReader newReader(final InputStream inputStream) {
-        return new InputStreamReader(new BOMInputStream(inputStream), StandardCharsets.UTF_8);
-    }
+//    public InputStreamReader newReader(final InputStream inputStream) {
+//        return new InputStreamReader(new BOMInputStream(inputStream), StandardCharsets.UTF_8);
+//    }
+
     @Data
     public class SNPinfo {
 

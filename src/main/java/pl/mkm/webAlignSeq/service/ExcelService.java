@@ -1,6 +1,8 @@
 package pl.mkm.webAlignSeq.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.biojava.bio.BioException;
 import org.biojava.bio.alignment.AlignmentPair;
 import org.biojava.bio.alignment.SmithWaterman;
 import org.biojava.bio.alignment.SubstitutionMatrix;
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+@Slf4j
 @Service
 public class ExcelService {
 
@@ -66,10 +69,9 @@ public class ExcelService {
     }
 
     private String splitRefSeqToCells(Sheet sheet, int rowRefPosition, int cellRefPosition) {
-        String refDNA;
         Row row = sheet.getRow(rowRefPosition);
         Cell cell = row.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-        refDNA = cell.getStringCellValue().replaceAll("\\s", "");
+        String refDNA = cell.getStringCellValue().replaceAll("\\s", "");
         char[] refDNAArr = refDNA.toCharArray();
         for (int i = 0; i < refDNAArr.length; i++) {
             cell = row.createCell(i + 1 + cellRefPosition);
@@ -89,25 +91,7 @@ public class ExcelService {
                 cellWithPosition = rowWithPosition.createCell(i + 1 + cellRefPosition);
                 cellWithPosition.setCellValue(positionChromosome + i);
             }
-            //start
-            List<CsvService.SNPinfo> listOfSNPinfo = csvService.readGeneInfo();
-            Row rowWithAlleles = sheet.createRow(rowRefPosition - 2);
-            Row rowWithRs = sheet.createRow(rowRefPosition - 3);
-            for (int i = 0; i < refDNAArr.length; i++) {
-                Cell cellWithAllel = rowWithAlleles.createCell(i + 1 + cellRefPosition);
-                Cell cellWithRs = rowWithRs.createCell(i + 1 + cellRefPosition);
-                for(CsvService.SNPinfo snp : listOfSNPinfo){
-                    Row rowWithPosition2 = sheet.getRow(rowRefPosition - 1);
-
-                    if(snp.getLocation() == rowWithPosition2.getCell(i + 1 + cellRefPosition).getNumericCellValue()){
-                        cellWithAllel.setCellValue(snp.getAlleles());
-                        cellWithRs.setCellValue(snp.getRsNumber());
-                    }
-                }
-            }
-
-            //end
-
+            addRsAndAllelesInfo(sheet, rowRefPosition, cellRefPosition, refDNAArr);
         } else {
             Row rowWithPosition = sheet.createRow(rowRefPosition - 1);
             for (int i = 0; i < refDNAArr.length; i++) {
@@ -115,8 +99,23 @@ public class ExcelService {
                 cellNumber.setCellValue(i + 1);
             }
         }
+    }
 
-
+    private void addRsAndAllelesInfo(Sheet sheet, int rowRefPosition, int cellRefPosition, char[] refDNAArr) {
+        List<CsvService.SNPinfo> listOfSNPinfo = csvService.readGeneInfo();
+        Row rowWithAlleles = sheet.createRow(rowRefPosition - 2);
+        Row rowWithRs = sheet.createRow(rowRefPosition - 3);
+        for (int i = 0; i < refDNAArr.length; i++) {
+            Cell cellWithAllel = rowWithAlleles.createCell(i + 1 + cellRefPosition);
+            Cell cellWithRs = rowWithRs.createCell(i + 1 + cellRefPosition);
+            for (CsvService.SNPinfo snp : listOfSNPinfo) {
+                Row rowWithPosition2 = sheet.getRow(rowRefPosition - 1);
+                if (snp.getLocation() == rowWithPosition2.getCell(i + 1 + cellRefPosition).getNumericCellValue()) {
+                    cellWithAllel.setCellValue(snp.getAlleles());
+                    cellWithRs.setCellValue(snp.getRsNumber());
+                }
+            }
+        }
     }
 
     private void splitTargetToCells(String refDNA, Sheet sheet, int rowRefPosition, int cellRefPosition) {
@@ -148,8 +147,7 @@ public class ExcelService {
         short insert = 2;
         short delete = 2;
         short gapExtend = 2;
-        SubstitutionMatrix substitutionMatrix;
-        substitutionMatrix = new SubstitutionMatrix(alphabet, match, replace);
+        SubstitutionMatrix substitutionMatrix = new SubstitutionMatrix(alphabet, match, replace);
         Sequence ref;
         Sequence target;
         int startNumber = 0;
@@ -160,6 +158,8 @@ public class ExcelService {
             target = DNATools.createDNASequence(targetDNA, "targetDNA");
             alignmentPair = alignerSmith.pairwiseAlignment(target, ref);
             startNumber = alignmentPair.getSubjectStart();
+        } catch (BioException e) {
+            log.info(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
