@@ -19,8 +19,26 @@
         <div class="upload-container">
             <div class="form-control-file">
                 <div>
-                    <h4>Upload excel file</h4>
-                    <form id="singleUploadForm" name="singleUploadForm" >
+                    <h5>Upload additional file (csv file) with SNP info  </h5>
+                    <h6>(not required)</h6>
+                    <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
+                        <input id="singleAdditionalFileUploadInput" type="file" name="additionalFile" class="btn btn-primary" required/>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <div class="upload-response">
+                        <div id="singleAdditionalFileUploadError"></div>
+                        <div id="singleAdditionalFileUploadSuccess"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="upload-container">
+            <div class="form-control-file">
+                <div>
+                    <h5>Upload excel file</h5>
+                    <form id="singleUploadForm" name="singleUploadForm">
                         <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary" required/>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
@@ -30,21 +48,20 @@
                     </div>
                 </div>
             </div>
-
-
-            <!--<div class="multiple-upload">-->
-            <!--<h3>Upload Multiple Files</h3>-->
-            <!--<form id="multipleUploadForm" name="multipleUploadForm">-->
-            <!--<input id="multipleFileUploadInput" type="file" name="files" class="file-input" multiple required />-->
-            <!--<button type="submit" class="primary submit-btn">Submit</button>-->
-            <!--</form>-->
-            <!--<div class="upload-response">-->
-            <!--<div id="multipleFileUploadError"></div>-->
-            <!--<div id="multipleFileUploadSuccess"></div>-->
-            <!--</div>-->
-            <!--</div>-->
         </div>
     </div>
+    <!--<div class="multiple-upload">-->
+    <!--<h3>Upload Multiple Files</h3>-->
+    <!--<form id="multipleUploadForm" name="multipleUploadForm">-->
+    <!--<input id="multipleFileUploadInput" type="file" name="files" class="file-input" multiple required />-->
+    <!--<button type="submit" class="primary submit-btn">Submit</button>-->
+    <!--</form>-->
+    <!--<div class="upload-response">-->
+    <!--<div id="multipleFileUploadError"></div>-->
+    <!--<div id="multipleFileUploadSuccess"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+
 
 </div>
 
