@@ -10,11 +10,6 @@ var singleAdditionalFileUploadInput = document.querySelector('#singleAdditionalF
 var singleAdditionalFileUploadError = document.querySelector('#singleAdditionalFileUploadError');
 var singleAdditionalFileUploadSuccess = document.querySelector('#singleAdditionalFileUploadSuccess');
 
-// var multipleUploadForm = document.querySelector('#multipleUploadForm');
-// var multipleFileUploadInput = document.querySelector('#multipleFileUploadInput');
-// var multipleFileUploadError = document.querySelector('#multipleFileUploadError');
-// var multipleFileUploadSuccess = document.querySelector('#multipleFileUploadSuccess');
-
 function uploadSingleFile(file) {
     var formData = new FormData();
     formData.append("file", file);
@@ -22,10 +17,11 @@ function uploadSingleFile(file) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/uploadFile");
 
-    xhr.onload = function() {
+    xhr.onload = function () {
         console.log(xhr.responseText);
         var response = JSON.parse(xhr.responseText);
-        if(xhr.status == 200) {
+
+        if (xhr.status == 200) {
             singleFileUploadError.style.display = "none";
             singleFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p><p>Click here to download your excel file: <a href='" + response.fileDownloadUri + "' target='_blank'>" + response.fileDownloadUri + "</a></p>";
             singleFileUploadSuccess.style.display = "block";
@@ -34,8 +30,12 @@ function uploadSingleFile(file) {
             singleFileUploadError.innerHTML = (response && response.message) || "Some Error Occurred";
         }
     }
-
     xhr.send(formData);
+}
+
+function waitDisplay() { // Submit button clicked
+    singleFileUploadSuccess.innerHTML = "<p>please wait...your file is processing... it may take few minutes</p>"
+    return true;
 }
 
 function uploadSingleAdditionalFile(additionalFile) {
@@ -44,10 +44,10 @@ function uploadSingleAdditionalFile(additionalFile) {
 
     var xhrAdd = new XMLHttpRequest();
     xhrAdd.open("POST", "/uploadAdditionalFile");
-    xhrAdd.onload = function() {
+    xhrAdd.onload = function () {
         console.log(xhrAdd.responseText);
         var response = JSON.parse(xhrAdd.responseText);
-        if(xhrAdd.status == 200) {
+        if (xhrAdd.status == 200) {
             singleAdditionalFileUploadError.style.display = "none";
             singleAdditionalFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p>";
             singleAdditionalFileUploadSuccess.style.display = "block";
@@ -56,43 +56,12 @@ function uploadSingleAdditionalFile(additionalFile) {
             singleAdditionalFileUploadError.innerHTML = (response && response.message) || "Some Error Occurred";
         }
     }
-
     xhrAdd.send(formAdditionalData);
 }
 
-
-// function uploadMultipleFiles(files) {
-//     var formData = new FormData();
-//     for(var index = 0; index < files.length; index++) {
-//         formData.append("files", files[index]);
-//     }
-//
-//     var xhr = new XMLHttpRequest();
-//     xhr.open("POST", "/uploadMultipleFiles");
-//
-//     xhr.onload = function() {
-//         console.log(xhr.responseText);
-//         var response = JSON.parse(xhr.responseText);
-//         if(xhr.status == 200) {
-//             multipleFileUploadError.style.display = "none";
-//             var content = "<p>All Files Uploaded Successfully</p>";
-//             for(var i = 0; i < response.length; i++) {
-//                 content += "<p>DownloadUrl : <a href='" + response[i].fileDownloadUri + "' target='_blank'>" + response[i].fileDownloadUri + "</a></p>";
-//             }
-//             multipleFileUploadSuccess.innerHTML = content;
-//             multipleFileUploadSuccess.style.display = "block";
-//         } else {
-//             multipleFileUploadSuccess.style.display = "none";
-//             multipleFileUploadError.innerHTML = (response && response.message) || "Some Error Occurred";
-//         }
-//     }
-//
-//     xhr.send(formData);
-// }
-
-singleAdditionalUploadForm.addEventListener('submit', function(event){
+singleAdditionalUploadForm.addEventListener('submit', function (event) {
     var files = singleAdditionalFileUploadInput.files;
-    if(files.length === 0) {
+    if (files.length === 0) {
         singleAdditionalFileUploadError.innerHTML = "Please select a file";
         singleAdditionalFileUploadError.style.display = "block";
     }
@@ -100,24 +69,13 @@ singleAdditionalUploadForm.addEventListener('submit', function(event){
     event.preventDefault();
 }, true);
 
-singleUploadForm.addEventListener('submit', function(event){
+singleUploadForm.addEventListener('submit', function (event) {
     var files = singleFileUploadInput.files;
-    if(files.length === 0) {
+    if (files.length === 0) {
         singleFileUploadError.innerHTML = "Please select a file";
         singleFileUploadError.style.display = "block";
     }
     uploadSingleFile(files[0]);
     event.preventDefault();
 }, true);
-
-
-// multipleUploadForm.addEventListener('submit', function(event){
-//     var files = multipleFileUploadInput.files;
-//     if(files.length === 0) {
-//         multipleFileUploadError.innerHTML = "Please select at least one file";
-//         multipleFileUploadError.style.display = "block";
-//     }
-//     uploadMultipleFiles(files);
-//     event.preventDefault();
-// }, true);
 
