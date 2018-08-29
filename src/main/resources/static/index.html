@@ -19,10 +19,11 @@
         <div class="upload-container">
             <div class="form-control-file">
                 <div>
-                    <h5>Upload additional file (csv file) with SNP info  </h5>
+                    <h5>Upload additional file (csv file) with SNP info </h5>
                     <h6>(not required)</h6>
                     <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
-                        <input id="singleAdditionalFileUploadInput" type="file" name="additionalFile" class="btn btn-primary" required/>
+                        <input id="singleAdditionalFileUploadInput" type="file" name="additionalFile"
+                               class="btn btn-primary" required/>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     <div class="upload-response">
@@ -38,9 +39,9 @@
             <div class="form-control-file">
                 <div>
                     <h5>Upload excel file</h5>
-                    <form id="singleUploadForm" name="singleUploadForm">
+                    <form id="singleUploadForm" name="singleUploadForm" onsubmit="return waitDisplay()">
                         <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary" required/>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <input type="submit" name="button" class="btn btn-primary" value="Submit">
                     </form>
                     <div class="upload-response">
                         <div id="singleFileUploadError"></div>
@@ -50,19 +51,6 @@
             </div>
         </div>
     </div>
-    <!--<div class="multiple-upload">-->
-    <!--<h3>Upload Multiple Files</h3>-->
-    <!--<form id="multipleUploadForm" name="multipleUploadForm">-->
-    <!--<input id="multipleFileUploadInput" type="file" name="files" class="file-input" multiple required />-->
-    <!--<button type="submit" class="primary submit-btn">Submit</button>-->
-    <!--</form>-->
-    <!--<div class="upload-response">-->
-    <!--<div id="multipleFileUploadError"></div>-->
-    <!--<div id="multipleFileUploadSuccess"></div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-
 </div>
 
 
