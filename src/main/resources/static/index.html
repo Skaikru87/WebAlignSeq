@@ -46,15 +46,22 @@
                                         Your target sequences should be located directly below reference sequence (in column C)
                                     </li>
                                     <li>
+                                        You can download example of excel file <a href="examples/example.xlsx" download="example_file"> here</a>
+                                    </li>
+                                    <li>
                                         If you add csv file containing data regarding SNP in your target gene,
                                         you should provide starting position of your reference sequence on chromosome (for example: 134886812).
                                         This number should be located in position c4 of your excel file.
                                     </li>
                                     <li>
-                                        Your csv file should be correctly performed using this instruction.
+                                        Your csv file should be correctly performed using <a href="views/instruction-additional-gene-info.html">this instruction</a>.
                                     </li>
                                 </ul>
-
+                            <picture>
+                                <a href="pictures/exampleOfExcel.jpg">
+                                <img src="pictures/exampleOfExcel.jpg" class="img-fluid img-thumbnail" alt="Responsive image">
+                                </a>
+                            </picture>
                         </div>
 
                     </div>
@@ -67,9 +74,9 @@
                                 <div class="card flex-fill ml-3 mr-3">
                                     <h5 class="card-header">1. Add gene info (optional)</h5>
                                     <div class="card-body">
-                                        <p>Upload file(.csv)with additional data about gene(see detaild instruction). </p>
+                                        <p>Upload file (.csv) with additional data about gene <a href="views/instruction-additional-gene-info.html"> (see detailed instruction)</a>. </p>
                                         <p>This step is optional.</p>
-                                        <p> Remember!If you would like to add additional file,you have to define in excel file the start chromosome position of your reference sequence. </p>
+                                        <p> Remember! If you would like to add additional file, you have to define in excel file the start chromosome position of your reference sequence. </p>
                                         <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
                                             <input id="singleAdditionalFileUploadInput" type="file"
                                                    name="additionalFile"
@@ -91,7 +98,7 @@
                                 <div class="card flex-fill ml-3 mr-3">
                                     <h5 class="card-header">2. Upload excel file</h5>
                                     <div class="card-body">
-                                        <p>Upload excel file(.xlsx).Remember!Reference sequence should be located at C4 position in excel file</p>
+                                        <p>Upload excel file (.xlsx). Remember! Reference sequence should be located at C4 position in excel file</p>
                                         <form id="singleUploadForm" name="singleUploadForm"
                                               onsubmit="return waitDisplay()">
                                             <input id="singleFileUploadInput" type="file" name="file"
@@ -115,6 +122,12 @@
                             <h5 class="card-header">Helpful links</h5>
                             <div class="card-body">
                                 <ul>
+                                    <li>
+                                        <a href="http://www.bioinformatics.nl/cgi-bin/emboss/merger" target="_blanck">EMBOSS merger</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://genome.ucsc.edu/cgi-bin/hgPcr" target="_blanck">UCSC In-silico PCR</a>
+                                    </li>
                                     <li>
                                         <a href="https://genome.ucsc.edu" target="_blanck">Genome Browser</a>
                                     </li>
