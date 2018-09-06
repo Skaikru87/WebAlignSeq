@@ -13,47 +13,144 @@
 </noscript>
 <div class="fluid">
     <div class="row justify-content-center">
-        <h1>WebAlignSeq</h1>
-    </div>
-    <div class="row justify-content-center">
-        <div class="upload-container">
-            <div class="form-control-file">
-                <div>
-                    <h5>Upload additional file (csv file) with SNP info </h5>
-                    <h6>(not required)</h6>
-                    <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
-                        <input id="singleAdditionalFileUploadInput" type="file" name="additionalFile"
-                               class="btn btn-primary" required/>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                    <div class="upload-response">
-                        <div id="singleAdditionalFileUploadError"></div>
-                        <div id="singleAdditionalFileUploadSuccess"></div>
-                    </div>
+        <div>
+            <h1>WebAlignSeq</h1>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="card text-white bg-dark mb-3 w-50">
+                <div class="text-center">
+                    Use this program for aligning your target DNA sequence to reference sequence.
+                    The program uses the excel file for taking sequences and storing results.
+                    The program puts each nucleotide in separate cell.
+                    Additionally, if you provide the data with rs numbers, the program will annotate nucleotides with rs
+                    numbers and alleles.
                 </div>
             </div>
         </div>
     </div>
-    <div class="row justify-content-center">
-        <div class="upload-container">
-            <div class="form-control-file">
-                <div>
-                    <h5>Upload excel file</h5>
-                    <form id="singleUploadForm" name="singleUploadForm" onsubmit="return waitDisplay()">
-                        <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary" required/>
-                        <input type="submit" name="button" class="btn btn-primary" value="Submit">
-                    </form>
-                    <div class="upload-response">
-                        <div id="singleFileUploadError"></div>
-                        <div id="singleFileUploadSuccess"></div>
+
+        <div class="row flex-fill">
+
+            <div class="col-lg-4">
+                <div class="row justify-content-center">
+                    <div class="card flex-fill ml-3 mr-3">
+                        <h5 class="card-header">Brief instruction</h5>
+                        <div class="card-body">
+
+                                <ul>
+                                    <li>
+                                        Your excel file should contains reference sequence located in position of c4 (in all sheet which you use).
+                                    </li>
+                                    <li>
+                                        Your target sequences should be located directly below reference sequence (in column C)
+                                    </li>
+                                    <li>
+                                        You can download example of excel file <a href="examples/example.xlsx" download="example_file"> here</a>
+                                    </li>
+                                    <li>
+                                        If you add csv file containing data regarding SNP in your target gene,
+                                        you should provide starting position of your reference sequence on chromosome (for example: 134886812).
+                                        How can you check the start position? <a href="views/instruction-start-position.html"> click here</a>.
+                                        This number should be located in position c4 of your excel file.
+                                    </li>
+                                    <li>
+                                        Your csv file should be correctly performed using <a href="views/instruction-additional-gene-info.html">this instruction</a>.
+                                    </li>
+                                </ul>
+                            <picture>
+                                <a href="pictures/exampleOfExcel.jpg">
+                                <img src="pictures/exampleOfExcel.jpg" class="img-fluid img-thumbnail" alt="Responsive image">
+                                </a>
+                            </picture>
+                        </div>
+
                     </div>
                 </div>
             </div>
+                <div class="col-lg-4">
+                    <div class="row justify-content-center">
+                        <div class="upload-container">
+                            <div class="form-control-file">
+                                <div class="card flex-fill ml-3 mr-3">
+                                    <h5 class="card-header">1. Add gene info (optional)</h5>
+                                    <div class="card-body">
+                                        <p>Upload file (.csv) with additional data about gene <a href="views/instruction-additional-gene-info.html"> (see detailed instruction)</a>. </p>
+                                        <p>This step is optional.</p>
+                                        <p> Remember! If you would like to add additional file, you have to define in excel file the start chromosome position of your reference sequence. </p>
+                                        <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
+                                            <input id="singleAdditionalFileUploadInput" type="file"
+                                                   name="additionalFile"
+                                                   class="btn btn-primary" required/>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </form>
+                                        <div class="upload-response">
+                                            <div id="singleAdditionalFileUploadError"></div>
+                                            <div id="singleAdditionalFileUploadSuccess"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="upload-container">
+                            <div class="form-control-file">
+                                <div class="card flex-fill ml-3 mr-3">
+                                    <h5 class="card-header">2. Upload excel file</h5>
+                                    <div class="card-body">
+                                        <p>Upload excel file (.xlsx). Remember! Reference sequence should be located at C4 position in excel file</p>
+                                        <form id="singleUploadForm" name="singleUploadForm"
+                                              onsubmit="return waitDisplay()">
+                                            <input id="singleFileUploadInput" type="file" name="file"
+                                                   class="btn btn-primary"
+                                                   required/>
+                                            <input type="submit" name="button" class="btn btn-primary" value="Submit">
+                                        </form>
+                                        <div class="upload-response">
+                                            <div id="singleFileUploadError"></div>
+                                            <div id="singleFileUploadSuccess"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="row justify-content-center">
+                        <div class="card flex-fill ml-3 mr-3">
+                            <h5 class="card-header">Helpful links</h5>
+                            <div class="card-body">
+                                <ul>
+                                    <li>
+                                        <a href="http://www.ensembl.org/index.html" target="_blank">Ensembl</a>
+                                    </li>
+                                    <li>
+                                        <a href="http://www.bioinformatics.nl/cgi-bin/emboss/merger" target="_blanck">EMBOSS merger</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://genome.ucsc.edu/cgi-bin/hgPcr" target="_blanck">UCSC In-silico PCR</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://genome.ucsc.edu" target="_blanck">Genome Browser</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastn&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome"
+                                           target="_blank">NCBI blast</a>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-    </div>
 </div>
 
-
-<script src="/js/main.js"></script>
+        <script src="/js/main.js"></script>
 </body>
 </html>
