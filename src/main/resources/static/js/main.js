@@ -21,7 +21,7 @@ function uploadSingleFile(file) {
         console.log(xhr.responseText);
         var response = JSON.parse(xhr.responseText);
 
-        if (xhr.status == 200) {
+        if (xhr.status === 200) {
             singleFileUploadError.style.display = "none";
             singleFileUploadSuccess.innerHTML = "<p>File Uploaded Successfully.</p><p>Click here to download your excel file: <a href='" + response.fileDownloadUri + "' target='_blank'>" + response.fileDownloadUri + "</a></p>";
             singleFileUploadSuccess.style.display = "block";
@@ -36,6 +36,18 @@ function uploadSingleFile(file) {
 function waitDisplay() { // Submit button clicked
     singleFileUploadSuccess.innerHTML = "<p>please wait...your file is processing... it may take few minutes</p>"
     return true;
+}
+function validateFileType(input){
+    var fileName = input.value,
+        idxDot = fileName.lastIndexOf(".") + 1,
+        extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (["xlsx", "css"].includes(extFile)){
+
+        singleFileUploadSuccess.innerHTML = "<p>correct file... please click Submit to launch the program</p>"
+    } else {
+        alert("Only excel files are allowed!");
+        input.value = ""
+    }
 }
 
 function uploadSingleAdditionalFile(additionalFile) {
@@ -58,6 +70,8 @@ function uploadSingleAdditionalFile(additionalFile) {
     }
     xhrAdd.send(formAdditionalData);
 }
+
+
 
 singleAdditionalUploadForm.addEventListener('submit', function (event) {
     var files = singleAdditionalFileUploadInput.files;

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.mkm.webAlignSeq.response.UploadFileResponse;
 import pl.mkm.webAlignSeq.service.FileStorageService;
+import pl.mkm.webAlignSeq.validator.ValidFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -25,19 +26,20 @@ public class FileController {
     @Autowired
     private FileStorageService fileStorageService;
 
+
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    public UploadFileResponse uploadFile(@ValidFile @RequestParam("file") MultipartFile file) {
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
+            String fileName = fileStorageService.storeFile(file);
+            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/downloadFile/")
+                    .path(fileName)
+                    .toUriString();
 
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
+            return new UploadFileResponse(fileName, fileDownloadUri,
+                    file.getContentType(), file.getSize());
+
     }
-
 
 
     @PostMapping("/uploadMultipleFiles")
@@ -60,7 +62,7 @@ public class FileController {
             log.info("Could not determine file type.");
         }
 
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
@@ -68,6 +70,8 @@ public class FileController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+
+
     }
 
 }

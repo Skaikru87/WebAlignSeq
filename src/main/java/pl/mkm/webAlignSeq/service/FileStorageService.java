@@ -65,7 +65,7 @@ public class FileStorageService {
         } catch (MalformedURLException ex) {
             throw new MyFileNotFoundException("File not found " + fileName, ex);
         }finally {
-            this.fileStorageLocation.resolve(fileName).toFile().delete();
+          //  this.fileStorageLocation.resolve(fileName).toFile().delete();
         }
     }
 }

@@ -100,11 +100,8 @@
                                     <h5 class="card-header">2. Upload excel file</h5>
                                     <div class="card-body">
                                         <p>Upload excel file (.xlsx). Remember! Reference sequence should be located at C4 position in excel file</p>
-                                        <form id="singleUploadForm" name="singleUploadForm"
-                                              onsubmit="return waitDisplay()">
-                                            <input id="singleFileUploadInput" type="file" name="file"
-                                                   class="btn btn-primary"
-                                                   required/>
+                                        <form id="singleUploadForm" name="singleUploadForm"  onsubmit="return waitDisplay()">
+                                            <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary"  required accept=".xlsx" onchange="validateFileType(this)"/>
                                             <input type="submit" name="button" class="btn btn-primary" value="Submit">
                                         </form>
                                         <div class="upload-response">
