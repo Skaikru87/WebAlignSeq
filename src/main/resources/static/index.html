@@ -40,7 +40,7 @@
 
                                 <ul>
                                     <li>
-                                        Your excel file should contains reference sequence located in position of c4 (in all sheet which you use).
+                                        Your excel file should contain reference sequence located in position of c4 (in all sheet which you use).
                                     </li>
                                     <li>
                                         Your target sequences should be located directly below reference sequence (in column C)
@@ -81,7 +81,7 @@
                                         <form id="singleAdditionalUploadForm" name="singleAdditionalUploadForm">
                                             <input id="singleAdditionalFileUploadInput" type="file"
                                                    name="additionalFile"
-                                                   class="btn btn-primary" required/>
+                                                   class="btn btn-primary" required accept=".csv" onchange="validateIfCsvFileType(this)"/>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </form>
                                         <div class="upload-response">
@@ -101,7 +101,7 @@
                                     <div class="card-body">
                                         <p>Upload excel file (.xlsx). Remember! Reference sequence should be located at C4 position in excel file</p>
                                         <form id="singleUploadForm" name="singleUploadForm"  onsubmit="return waitDisplay()">
-                                            <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary"  required accept=".xlsx" onchange="validateFileType(this)"/>
+                                            <input id="singleFileUploadInput" type="file" name="file" class="btn btn-primary"  required accept=".xlsx" onchange="validateIfExcelFileType(this)"/>
                                             <input type="submit" name="button" class="btn btn-primary" value="Submit">
                                         </form>
                                         <div class="upload-response">

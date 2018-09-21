@@ -37,15 +37,15 @@ function waitDisplay() { // Submit button clicked
     singleFileUploadSuccess.innerHTML = "<p>please wait...your file is processing... it may take few minutes</p>"
     return true;
 }
-function validateFileType(input){
+function validateIfExcelFileType(input){
     var fileName = input.value,
         idxDot = fileName.lastIndexOf(".") + 1,
         extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
-    if (["xlsx", "css"].includes(extFile)){
+    if (["xlsx"].includes(extFile)){
 
         singleFileUploadSuccess.innerHTML = "<p>correct file... please click Submit to launch the program</p>"
     } else {
-        alert("Only excel files are allowed!");
+        alert("Only csv files are allowed!");
         input.value = ""
     }
 }
@@ -71,7 +71,18 @@ function uploadSingleAdditionalFile(additionalFile) {
     xhrAdd.send(formAdditionalData);
 }
 
+function validateIfCsvFileType(input){
+    var fileName = input.value,
+        idxDot = fileName.lastIndexOf(".") + 1,
+        extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (["css"].includes(extFile)){
 
+        singleFileUploadSuccess.innerHTML = "<p>correct file... please click Submit to launch the program</p>"
+    } else {
+        alert("Only excel files are allowed!");
+        input.value = ""
+    }
+}
 
 singleAdditionalUploadForm.addEventListener('submit', function (event) {
     var files = singleAdditionalFileUploadInput.files;
