@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class ExcelFileValidator implements ConstraintValidator<ValidFile,MultipartFile> {
+public class FileValidator implements ConstraintValidator<ValidFile,MultipartFile> {
     @Override
     public void initialize(ValidFile constraintAnnotation) {
 
@@ -20,7 +20,7 @@ public class ExcelFileValidator implements ConstraintValidator<ValidFile,Multipa
         if (!isSupportedContentType(contentType)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    "Only excel file are allowed")
+                    "Only excel or csv file are allowed")
                     .addConstraintViolation();
 
             result = false;
@@ -31,6 +31,8 @@ public class ExcelFileValidator implements ConstraintValidator<ValidFile,Multipa
 
     private boolean isSupportedContentType(String contentType) {
         return contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                || contentType.equals("application/xlsx");
+                || contentType.equals("application/xlsx")
+                || contentType.equals("application/vnd.ms-excel")
+                ||contentType.equals("text.csv");
     }
 }

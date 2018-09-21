@@ -75,11 +75,11 @@ function validateIfCsvFileType(input){
     var fileName = input.value,
         idxDot = fileName.lastIndexOf(".") + 1,
         extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
-    if (["css"].includes(extFile)){
+    if (["csv"].includes(extFile)){
 
         singleFileUploadSuccess.innerHTML = "<p>correct file... please click Submit to launch the program</p>"
     } else {
-        alert("Only excel files are allowed!");
+        alert("Only csv files are allowed!");
         input.value = ""
     }
 }

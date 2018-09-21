@@ -9,7 +9,8 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ExcelFileValidator.class)
+@Constraint(validatedBy = FileValidator.class)
+
 public @interface ValidFile {
     String message() default "Invalid file";
 
