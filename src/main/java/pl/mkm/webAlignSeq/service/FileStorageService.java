@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static javax.management.timer.Timer.ONE_DAY;
+import static javax.management.timer.Timer.ONE_MINUTE;
 
 @Slf4j
 @Service
@@ -68,4 +77,36 @@ public class FileStorageService {
           //  this.fileStorageLocation.resolve(fileName).toFile().delete();
         }
     }
+
+//    @Scheduled(fixedRate = ONE_MINUTE)
+//    public void cleanUploadsDirectory(){
+//        try {
+//            findFiles(this.fileStorageLocation.toAbsolutePath().toString());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        log.info("cleaning uploads.");
+//    }
+//    public void findFiles(String filePath) throws IOException {
+//        List<File> files = Files.list(Paths.get(filePath))
+//                .map(path -> path.toFile())
+//                .collect(Collectors.toList());
+//        for(File file: files) {
+//            if(file.isDirectory()) {
+//                findFiles(file.getAbsolutePath());
+//            } else if(isFileOld(file)){
+//                deleteFile(file);
+//            }
+//        }
+//    }
+//
+//    public void deleteFile(File file) {
+//        file.delete();
+//    }
+//
+//    public boolean isFileOld(File file) {
+//        LocalDate fileDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
+//        LocalDate oldDate = LocalDate.now().minusDays(2);
+//        return fileDate.isBefore(oldDate);
+//    }
 }

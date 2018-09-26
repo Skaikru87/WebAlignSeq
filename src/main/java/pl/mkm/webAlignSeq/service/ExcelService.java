@@ -2,6 +2,7 @@ package pl.mkm.webAlignSeq.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.biojava.bio.BioException;
 import org.biojava.bio.alignment.AlignmentPair;
 import org.biojava.bio.alignment.SmithWaterman;
@@ -43,6 +44,8 @@ public class ExcelService {
                     int cellRefPosition = 2; // remember! first cell is 0
                     String refDNA = splitRefSeqToCells(sheet, rowRefPosition, cellRefPosition);
                     splitTargetToCells(refDNA, sheet, rowRefPosition, cellRefPosition);
+
+                    addRules(sheet);
                 }
             } catch (NullPointerException e) {
                 System.out.println("empty sheet!, please remove empty sheet and try again");
@@ -57,16 +60,32 @@ public class ExcelService {
         Files.delete(fileExcel.toPath());
     }
 
-    private CellStyle setCellStyleDifferNucleotides(Workbook workbook, char nucleotide) {
-        CellStyle style = workbook.createCellStyle();
-        if (nucleotide == 'T') style.setFillForegroundColor(IndexedColors.RED1.getIndex());
-        if (nucleotide == 'A') style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
-        if (nucleotide == 'C') style.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
-        if (nucleotide == 'G') style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+    private void addRules(Sheet sheet) {
+        SheetConditionalFormatting conditionalFormatting = sheet.getSheetConditionalFormatting();
+        CellRangeAddress[] range= {CellRangeAddress.valueOf("A1:XFD300000")};
 
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        return style;
+        ConditionalFormattingRule ruleT = conditionalFormatting.createConditionalFormattingRule(ComparisonOperator.EQUAL,"\"T\"");
+        PatternFormatting formatT = ruleT.createPatternFormatting();
+        formatT.setFillBackgroundColor(IndexedColors.RED1.getIndex());
+        conditionalFormatting.addConditionalFormatting(range, ruleT);
+
+        ConditionalFormattingRule ruleA = conditionalFormatting.createConditionalFormattingRule(ComparisonOperator.EQUAL,"\"A\"");
+        PatternFormatting formatA = ruleA.createPatternFormatting();
+        formatA.setFillBackgroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        conditionalFormatting.addConditionalFormatting(range, ruleA);
+
+        ConditionalFormattingRule ruleC = conditionalFormatting.createConditionalFormattingRule(ComparisonOperator.EQUAL,"\"C\"");
+        PatternFormatting formatC = ruleC.createPatternFormatting();
+        formatC.setFillBackgroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+        conditionalFormatting.addConditionalFormatting(range, ruleC);
+
+        ConditionalFormattingRule ruleG = conditionalFormatting.createConditionalFormattingRule(ComparisonOperator.EQUAL,"\"G\"");
+        PatternFormatting formatG = ruleG.createPatternFormatting();
+        formatG.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        conditionalFormatting.addConditionalFormatting(range, ruleG);
     }
+
+
 
     private String splitRefSeqToCells(Sheet sheet, int rowRefPosition, int cellRefPosition) {
         Row row = sheet.getRow(rowRefPosition);
@@ -76,7 +95,6 @@ public class ExcelService {
         for (int i = 0; i < refDNAArr.length; i++) {
             cell = row.createCell(i + 1 + cellRefPosition);
             cell.setCellValue("" + refDNAArr[i]);
-            cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(), refDNAArr[i]));
         }
         addPositionOnChromosome(sheet, rowRefPosition, cellRefPosition, refDNAArr);
         return refDNA;
@@ -134,7 +152,6 @@ public class ExcelService {
                 }
                 cell = row1.createCell(k + startNumber + cellRefPosition);
                 cell.setCellValue("" + targedAlignedArr[k]);
-                cell.setCellStyle(setCellStyleDifferNucleotides(sheet.getWorkbook(), targedAlignedArr[k]));
             }
         }
     }
