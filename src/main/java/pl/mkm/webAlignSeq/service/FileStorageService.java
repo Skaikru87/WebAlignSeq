@@ -78,35 +78,37 @@ public class FileStorageService {
         }
     }
 
-//    @Scheduled(fixedRate = ONE_MINUTE)
-//    public void cleanUploadsDirectory(){
-//        try {
-//            findFiles(this.fileStorageLocation.toAbsolutePath().toString());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        log.info("cleaning uploads.");
-//    }
-//    public void findFiles(String filePath) throws IOException {
-//        List<File> files = Files.list(Paths.get(filePath))
-//                .map(path -> path.toFile())
-//                .collect(Collectors.toList());
-//        for(File file: files) {
-//            if(file.isDirectory()) {
-//                findFiles(file.getAbsolutePath());
-//            } else if(isFileOld(file)){
-//                deleteFile(file);
-//            }
-//        }
-//    }
-//
-//    public void deleteFile(File file) {
-//        file.delete();
-//    }
-//
-//    public boolean isFileOld(File file) {
-//        LocalDate fileDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
-//        LocalDate oldDate = LocalDate.now().minusDays(2);
-//        return fileDate.isBefore(oldDate);
-//    }
+    @Scheduled(fixedRate = ONE_DAY)
+    public void cleanUploadsDirectory(){
+        try {
+            findFiles(this.fileStorageLocation.toAbsolutePath().toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.info("cleaning uploads...");
+    }
+    public void findFiles(String filePath) throws IOException {
+        List<File> files = Files.list(Paths.get(filePath))
+                .map(path -> path.toFile())
+                .collect(Collectors.toList());
+        for(File file: files) {
+
+
+            if(file.isDirectory()) {
+                findFiles(file.getAbsolutePath());
+            } else if(isFileOld(file)){
+                deleteFile(file);
+            }
+        }
+    }
+
+    public void deleteFile(File file) {
+        file.delete();
+    }
+
+    public boolean isFileOld(File file) {
+        LocalDate fileDate = Instant.ofEpochMilli(file.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate oldDate = LocalDate.now().minusDays(2);
+        return fileDate.isBefore(oldDate);
+    }
 }
