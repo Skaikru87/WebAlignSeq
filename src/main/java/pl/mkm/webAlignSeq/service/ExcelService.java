@@ -6,7 +6,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.biojava.bio.BioException;
 import org.biojava.bio.alignment.AlignmentPair;
 import org.biojava.bio.alignment.SmithWaterman;
-import org.biojava.bio.alignment.SubstitutionMatrix;
 import org.biojava.bio.seq.DNATools;
 import org.biojava.bio.seq.Sequence;
 import org.biojava.bio.symbol.AlphabetManager;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import pl.mkm.webAlignSeq.biojava.MySubstitutionMatrix;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -164,7 +164,7 @@ public class ExcelService {
         short insert = 2;
         short delete = 2;
         short gapExtend = 2;
-        SubstitutionMatrix substitutionMatrix = new SubstitutionMatrix(alphabet, match, replace);
+        MySubstitutionMatrix substitutionMatrix = new MySubstitutionMatrix(alphabet, match, replace);
         Sequence ref;
         Sequence target;
         int startNumber = 0;
