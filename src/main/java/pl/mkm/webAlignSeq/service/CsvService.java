@@ -27,9 +27,9 @@ public class CsvService {
         try {
             Reader reader = new FileReader(csvFile);
             Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader);
-
+            log.info("reading csv file...");
             for (CSVRecord record : records) {
-                log.info(" reading csv... record number: " + record.getRecordNumber());
+                //log.info(" reading csv... record number: " + record.getRecordNumber());
                 SNPinfo snpInfo = new SNPinfo();
 
                 snpInfo.setRsNumber(record.get(VARIANT_ID));
