@@ -44,14 +44,15 @@ public class ExcelService {
                     int cellRefPosition = 2; // remember! first cell is 0
                     String refDNA = splitRefSeqToCells(sheet, rowRefPosition, cellRefPosition);
                     splitTargetToCells(refDNA, sheet, rowRefPosition, cellRefPosition);
-
                     addRules(sheet);
+                    log.info("performing sheet " + sheet.getSheetName());
                 }
             } catch (NullPointerException e) {
                 System.out.println("empty sheet!, please remove empty sheet and try again");
             }
             try (OutputStream excelWriter = new FileOutputStream(fileExcel)) {
                 workbook.write(excelWriter);
+                log.info("writing workbook");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,6 +63,7 @@ public class ExcelService {
 
     private void addRules(Sheet sheet) {
         SheetConditionalFormatting conditionalFormatting = sheet.getSheetConditionalFormatting();
+        log.info("adding formatting rules");
         CellRangeAddress[] range= {CellRangeAddress.valueOf("A1:XFD300000")};
 
         ConditionalFormattingRule ruleT = conditionalFormatting.createConditionalFormattingRule(ComparisonOperator.EQUAL,"\"T\"");
@@ -97,11 +99,13 @@ public class ExcelService {
             cell.setCellValue("" + refDNAArr[i]);
         }
         addPositionOnChromosome(sheet, rowRefPosition, cellRefPosition, refDNAArr);
+        log.info("performing ref seq");
         return refDNA;
     }
 
     private void addPositionOnChromosome(Sheet sheet, int rowRefPosition, int cellRefPosition, char[] refDNAArr) {
         if (!(sheet.getRow(rowRefPosition - 1) == null)) {
+            log.info("adding position on chromosome");
             Row rowWithPosition = sheet.getRow(rowRefPosition - 1);
             Cell cellWithPosition = rowWithPosition.getCell(cellRefPosition, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
             double positionChromosome = cellWithPosition.getNumericCellValue();
@@ -123,6 +127,7 @@ public class ExcelService {
         List<CsvService.SNPinfo> listOfSNPinfo = csvService.readGeneInfo();
         Row rowWithAlleles = sheet.createRow(rowRefPosition - 2);
         Row rowWithRs = sheet.createRow(rowRefPosition - 3);
+        log.info("adding alleles info");
         for (int i = 0; i < refDNAArr.length; i++) {
             Cell cellWithAllel = rowWithAlleles.createCell(i + 1 + cellRefPosition);
             Cell cellWithRs = rowWithRs.createCell(i + 1 + cellRefPosition);
@@ -137,12 +142,12 @@ public class ExcelService {
     }
 
     private void splitTargetToCells(String refDNA, Sheet sheet, int rowRefPosition, int cellRefPosition) {
-        String targetDNA;
+        log.info("splitting target to cells");
         Cell cell;
         for (int i = rowRefPosition + 1; i < sheet.getLastRowNum() + 1; i++) {
             Row row1 = sheet.getRow(i);
             Cell cell1 = row1.getCell(cellRefPosition);
-            targetDNA = cell1.getStringCellValue().replaceAll("\\s", "");
+            String targetDNA = cell1.getStringCellValue().replaceAll("\\s", "");
             int startNumber = getStartNumberOfAlignment(refDNA, targetDNA);
             char[] targedAlignedArr = targetDNA.toCharArray();
             for (int k = 0; k < targedAlignedArr.length; k++) {

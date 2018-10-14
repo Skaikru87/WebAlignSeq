@@ -37,7 +37,7 @@ public class FileController {
                     .path("/downloadFile/")
                     .path(fileName)
                     .toUriString();
-
+            log.info("excel file uploaded");
             return new UploadFileResponse(fileName, fileDownloadUri,
                     file.getContentType(), file.getSize());
 
@@ -56,7 +56,7 @@ public class FileController {
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 
         Resource resource = fileStorageService.loadFileAsResource(fileName);
-
+        log.info("excel file send to download");
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
