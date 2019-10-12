@@ -88,36 +88,181 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<jvmArguments>-Xms256m</jvmArguments>
-					<jvmArguments>-Xmx512m</jvmArguments>
+					<executable>false</executable>
+					<finalName>${project.build.finalName}-fat</finalName>
+					<mainClass>pl.mkm.webAlignSeq.WebAlignSeqApplication</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.3</version>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<id>attach-sources</id>
 						<goals>
-							<goal>copy</goal>
+							<goal>jar</goal>
 						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>pl.skaikru87</groupId>
-									<artifactId>WebAlignSeq</artifactId>
-									<version>1.0.2-SNAPSHOT</version>
-									<destFileName>web-align-seq.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>external.atlassian.jgitflow</groupId>
+				<artifactId>jgitflow-maven-plugin</artifactId>
+				<version>1.0-m5.1</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<pushHotfixes>true</pushHotfixes>
+					<pushFeatures>true</pushFeatures>
+					<pushReleases>true</pushReleases>
+					<pullDevelop>true</pullDevelop>
+					<pullMaster>true</pullMaster>
+					<noDeploy>true</noDeploy>
+					<enableSshAgent>true</enableSshAgent>
+					<allowUntracked>true</allowUntracked>
+					<allowSnapshots>true</allowSnapshots>
+				</configuration>
+			</plugin>
+
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>external.atlassian.jgitflow</groupId>
+					<artifactId>jgitflow-maven-plugin</artifactId>
+					<version>1.0-m5.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+	<profiles>
+		<profile>
+			<id>deb</id>
+			<!--<activation>-->
+				<!--<os>-->
+					<!--<family>windows</family>-->
+				<!--</os>-->
+				<!--<activeByDefault>false</activeByDefault>-->
+			<!--</activation>-->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>no.arktekk.unix</groupId>
+						<artifactId>unix-maven-plugin</artifactId>
+						<version>1.0-alpha-6</version>
+						<executions>
+							<execution>
+								<id>create-deb</id>
+								<goals>
+									<goal>package-deb</goal>
+								</goals>
+							</execution>
+						</executions>
+						<extensions>true</extensions>
+						<configuration>
+							<contact>Mateusz Michalski</contact>
+							<contactEmail>mateuszmichalski.K@gmail.com</contactEmail>
+							<revision>${deb.revision}</revision>
+							<deb>
+								<section>misc</section>
+								<priority>optional</priority>
+								<pre-depends>supervisor</pre-depends>
+								<depends>java-runtime|oracle-java8-installer</depends>
+							</deb>
 
+							<assembly>
+								<copyFile>
+									<path>${basedir}/target/${project.artifactId}-${project.version}-fat.jar</path>
+									<toFile>
+										/opt/${project.artifactId}/${project.artifactId}-${project.version}-fat.jar
+									</toFile>
+									<attributes>
+										<user>webaligner</user>
+										<group>root</group>
+										<mode>0660</mode>
+									</attributes>
+								</copyFile>
+								<mkdirs>
+									<paths>
+										<path>/etc/${project.artifactId}</path>
+									</paths>
+									<attributes>
+										<user>webaligner</user>
+										<group>root</group>
+										<mode>0660</mode>
+									</attributes>
+								</mkdirs>
+								<copyFile>
+									<path>${basedir}/src/main/unix/application.properties.default</path>
+									<toFile>/etc/${project.artifactId}/application.properties.default</toFile>
+									<attributes>
+										<user>webaligner</user>
+										<group>root</group>
+										<mode>0660</mode>
+									</attributes>
+								</copyFile>
+								<symlink>
+									<path>/opt/${project.artifactId}/${project.artifactId}.jar</path>
+									<value>/opt/${project.artifactId}/${project.artifactId}-${project.version}-fat.jar
+									</value>
+								</symlink>
+								<symlink>
+									<path>/opt/${project.artifactId}/config</path>
+									<value>/etc/${project.artifactId}</value>
+								</symlink>
+								<copyFile>
+									<path>${basedir}/src/main/unix/supervisor.conf</path>
+									<toFile>/etc/${project.artifactId}/${project.artifactId}.conf.supervisor-default
+									</toFile>
+									<attributes>
+										<user>webaligner</user>
+										<group>root</group>
+										<mode>0660</mode>
+									</attributes>
+								</copyFile>
+							</assembly>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+		</repository>
+	</repositories>
 </project>

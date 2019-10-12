@@ -1,0 +1,3 @@
+#!/bin/bash
+rm /etc/supervisor/conf.d/webaligner.conf
+exit 0

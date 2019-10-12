@@ -1,0 +1,24 @@
+#!/bin/bash
+
+applicationName=webaligner
+
+if [ -a  /etc/${applicationName}/application.properties ] ; then
+  echo "/etc/${applicationName}/application.properties istnieje"
+else
+  cp /etc/${applicationName}/application.properties.default /etc/${applicationName}/application.properties
+fi
+if [ -a  /etc/${applicationName}/${applicationName}.conf.supervisor ] ; then
+  echo "/etc/${applicationName}/${applicationName}.conf.supervisor istnieje"
+else
+  cp /etc/${applicationName}/${applicationName}.conf.supervisor-default /etc/${applicationName}/${applicationName}.conf.supervisor
+fi
+if [ -a  /etc/supervisor/conf.d/${applicationName}.conf ] ; then
+  echo "/etc/supervisor/conf.d/${applicationName}.conf istnieje"
+  supervisorctl restart ${applicationName}
+else
+  ln -s /etc/${applicationName}/${applicationName}.conf.supervisor /etc/supervisor/conf.d/${applicationName}.conf
+  supervisorctl update ${applicationName}
+fi
+
+
+exit 0

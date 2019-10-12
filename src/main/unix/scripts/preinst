@@ -1,0 +1,4 @@
+#!/bin/bash
+aaa=`adduser --system --shell /bin/sh --home /opt/webaligner webaligner 2> /dev/null`
+exit 0
+
